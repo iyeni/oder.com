@@ -1,3 +1,5 @@
+// lib/cart_page.dart
+
 import 'package:flutter/material.dart';
 import 'package:oderdotcom/login_signup_page.dart';
 import 'product.dart';
@@ -7,7 +9,11 @@ class CartPage extends StatefulWidget {
   final List<Product> cartItems;
   final Function() updateCartBadge;
 
-  CartPage({required this.isLoggedIn, required this.cartItems, required this.updateCartBadge});
+  CartPage({
+    required this.isLoggedIn,
+    required this.cartItems,
+    required this.updateCartBadge,
+  });
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -27,7 +33,6 @@ class _CartPageState extends State<CartPage> {
   void _increaseQuantity(Product product) {
     setState(() {
       _productQuantities[product] = (_productQuantities[product] ?? 0) + 1;
-      widget.cartItems.add(product);
     });
     widget.updateCartBadge();
   }
@@ -36,10 +41,8 @@ class _CartPageState extends State<CartPage> {
     setState(() {
       if (_productQuantities[product]! > 1) {
         _productQuantities[product] = _productQuantities[product]! - 1;
-        widget.cartItems.remove(product);
       } else {
         _productQuantities.remove(product);
-        widget.cartItems.remove(product);
       }
     });
     widget.updateCartBadge();
@@ -61,7 +64,8 @@ class _CartPageState extends State<CartPage> {
                 return ListTile(
                   leading: Image.asset(product.imageUrl, width: 50, height: 50),
                   title: Text(product.name),
-                  subtitle: Text('Total: \$${(product.price * quantity).toStringAsFixed(2)}'),
+                  subtitle: Text(
+                      'Total: \$${(product.price * quantity).toStringAsFixed(2)}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

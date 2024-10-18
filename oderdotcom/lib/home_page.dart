@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:oderdotcom/account_page.dart';
 import 'package:oderdotcom/cart_page.dart';
-import 'package:oderdotcom/marketplace.dart'; // Import the new file
+import 'package:oderdotcom/marketplace.dart';
 import 'product.dart';
 import 'product_card.dart';
 
@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
     Product(name: 'Product2', brand: 'Electrosale', price: 5.99, imageUrl: 'assets/cement.jpg'),
     Product(name: 'Product3', brand: 'Spar', price: 8.19, imageUrl: 'assets/sugar.jpg'),
     Product(name: 'Product4', brand: 'Clique Pharmacy', price: 1.29, imageUrl: 'assets/pill.jpg'),
+    // Add more products as needed
   ];
 
   final List<Product> cartItems = [];
@@ -37,13 +38,17 @@ class _HomePageState extends State<HomePage> {
     updateCartBadge();
   }
 
+  int getTotalQuantity() {
+    return cartItems.length;
+  }
+
   void updateCartBadge() {
     setState(() {});
   }
 
   List<Widget> get _pages => [
-        HomePageContent(products: products, searchQuery: searchQuery, addToCart: addToCart),
-        MarketPlaceScreen(), // Use the imported widget
+        HomePageContent(products: products, searchQuery: searchQuery, addToCart: addToCart, cartItems: cartItems),
+        MarketPlaceScreen(),
         CartPage(isLoggedIn: isLoggedIn, cartItems: cartItems, updateCartBadge: updateCartBadge),
         AccountPage(username: username),
       ];
@@ -71,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color.fromARGB(255, 36, 198, 50),
+        backgroundColor: Color.fromARGB(255, 242, 59, 3),
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.yellow,
         unselectedItemColor: Colors.white54,
@@ -92,7 +97,7 @@ class _HomePageState extends State<HomePage> {
               Icons.menu,
               color: _currentIndex == 1 ? Colors.yellow : Colors.white54,
             ),
-            label: 'MarketPlace',
+            label: 'Market',
           ),
           BottomNavigationBarItem(
             icon: Stack(
@@ -101,7 +106,7 @@ class _HomePageState extends State<HomePage> {
                   Icons.shopping_cart,
                   color: _currentIndex == 2 ? Colors.yellow : Colors.white54,
                 ),
-                if (cartItems.isNotEmpty)
+                if (getTotalQuantity() > 0)
                   Positioned(
                     right: 0,
                     child: Container(
@@ -115,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                         minHeight: 12,
                       ),
                       child: Text(
-                        '${cartItems.length}',
+                        '${getTotalQuantity()}',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 8,
@@ -145,12 +150,22 @@ class HomePageContent extends StatelessWidget {
   final List<Product> products;
   final String searchQuery;
   final Function(Product) addToCart;
+  final List<Product> cartItems;
 
   HomePageContent({
     required this.products,
     required this.searchQuery,
     required this.addToCart,
+    required this.cartItems,
   });
+
+  void _showSnackBar(BuildContext context, String productName) {
+    final snackBar = SnackBar(
+      content: Text('$productName added to cart!'),
+      duration: Duration(seconds: 2),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +182,12 @@ class HomePageContent extends StatelessWidget {
         if (products[index].name.toLowerCase().contains(searchQuery)) {
           return ProductCard(
             product: products[index],
-            addToCart: () => addToCart(products[index]),
+            addToCart: () {
+              addToCart(products[index]);
+              _showSnackBar(context, products[index].name);
+            },
+            cartItems: cartItems,
+            onStoreAddToCart: addToCart,
           );
         } else {
           return Container();

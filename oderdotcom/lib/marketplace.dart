@@ -24,8 +24,8 @@ class MarketPlaceScreen extends StatelessWidget {
             context,
             'Shop by Store',
             [
-              'Walmart', 'Target', 'Costco', 'Kroger',
-              'Whole Foods', 'Trader Joe\'s', 'Safeway', 'Publix'
+              'OK Supermarket', 'TM Pick n Pay', 'Bon marche', 'Spar',
+              'Ectrosales', 'Clique Pharmacy'
             ],
           ),
           SizedBox(height: 10),
@@ -33,8 +33,8 @@ class MarketPlaceScreen extends StatelessWidget {
             context,
             'Deals of the Day',
             [
-              'Amazon', 'eBay', 'Best Buy', 'Home Depot',
-              'Lowe\'s', 'Macy\'s', 'Nordstrom', 'Sephora'
+              'OK Supermarket', 'TM Pick n Pay', 'Bon marche', 'Spar',
+              'Ectrosales', 'Clique Pharmacy'
             ],
           ),
         ],
